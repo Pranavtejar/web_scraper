@@ -7,65 +7,40 @@ from twilio.rest import Client
 TWILIO_ACCOUNT_SID = 'YOUR_TWILIO_ACCOUNT_SID'
 TWILIO_AUTH_TOKEN = 'YOUR_TWILIO_AUTH_TOKEN'
 
-
-
 class PriceDropNotifierApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Amazon Price Drop Notifier")
         self.root.geometry("500x400")
         self.root.configure(bg="#2e3f4f")
-        self.interval = 60000  # Check every 60 seconds (1 minute)
+        self.interval = 60000  
 
-        # Setting custom font and colors
         self.label_font = ("Helvetica", 12, "bold")
         self.entry_font = ("Helvetica", 10)
         self.btn_font = ("Helvetica", 10, "bold")
 
-        # Set up main frame for padding and centering
         self.main_frame = tk.Frame(self.root, bg="#2e3f4f")
         self.main_frame.pack(pady=20)
 
-        # GUI Elements
         self.create_widgets()
 
     def create_widgets(self):
-        # Header
-        header_label = tk.Label(
-            self.main_frame, text="Track Price Drops on Amazon",
-            font=("Helvetica", 16, "bold"), fg="#f4f4f9", bg="#2e3f4f"
-        )
+        header_label = tk.Label(self.main_frame, text="Track Price Drops on Amazon", font=("Helvetica", 16, "bold"), fg="#f4f4f9", bg="#2e3f4f")
         header_label.grid(row=0, column=0, columnspan=2, pady=(0, 20))
 
-        # Product URL
-        tk.Label(self.main_frame, text="Product URL:", font=self.label_font, fg="#f4f4f9", bg="#2e3f4f").grid(row=1,
-                                                                                                              column=0,
-                                                                                                              sticky="e",
-                                                                                                              padx=5,
-                                                                                                              pady=5)
+        tk.Label(self.main_frame, text="Product URL:", font=self.label_font, fg="#f4f4f9", bg="#2e3f4f").grid(row=1, column=0, sticky="e", padx=5, pady=5)
         self.product_url_entry = tk.Entry(self.main_frame, font=self.entry_font, width=40)
         self.product_url_entry.grid(row=1, column=1, padx=5, pady=5)
 
-        # Desired Price
-        tk.Label(self.main_frame, text="Desired Price ($):", font=self.label_font, fg="#f4f4f9", bg="#2e3f4f").grid(
-            row=2, column=0, sticky="e", padx=5, pady=5)
+        tk.Label(self.main_frame, text="Desired Price ($):", font=self.label_font, fg="#f4f4f9", bg="#2e3f4f").grid(row=2, column=0, sticky="e", padx=5, pady=5)
         self.desired_price_entry = tk.Entry(self.main_frame, font=self.entry_font, width=20)
         self.desired_price_entry.grid(row=2, column=1, padx=5, pady=5)
 
-        # Mobile Number
-        tk.Label(self.main_frame, text="Mobile Number:", font=self.label_font, fg="#f4f4f9", bg="#2e3f4f").grid(row=3,
-                                                                                                                column=0,
-                                                                                                                sticky="e",
-                                                                                                                padx=5,
-                                                                                                                pady=5)
+        tk.Label(self.main_frame, text="Mobile Number:", font=self.label_font, fg="#f4f4f9", bg="#2e3f4f").grid(row=3, column=0, sticky="e", padx=5, pady=5)
         self.mobile_number_entry = tk.Entry(self.main_frame, font=self.entry_font, width=20)
         self.mobile_number_entry.grid(row=3, column=1, padx=5, pady=5)
 
-        # Start Tracking Button
-        self.start_button = tk.Button(
-            self.main_frame, text="Start Tracking", font=self.btn_font, fg="#ffffff", bg="#4CAF50",
-            activebackground="#45a049", command=self.start_tracking
-        )
+        self.start_button = tk.Button(self.main_frame, text="Start Tracking", font=self.btn_font, fg="#ffffff", bg="#4CAF50", activebackground="#45a049", command=self.start_tracking)
         self.start_button.grid(row=4, column=0, columnspan=2, pady=20)
 
     def start_tracking(self):
@@ -78,8 +53,6 @@ class PriceDropNotifierApp:
             return
 
         messagebox.showinfo("Tracking Started", "Price tracking has started. You will be notified if the price drops.")
-
-        # Start the loop to check the price at intervals
         self.check_price_loop()
 
     def check_price_loop(self):
@@ -89,7 +62,6 @@ class PriceDropNotifierApp:
         else:
             print(f"Checked price: ${current_price}. No notification sent.")
 
-        # Schedule the next price check
         self.root.after(self.interval, self.check_price_loop)
 
     def get_price(self, product_url):
@@ -101,14 +73,10 @@ class PriceDropNotifierApp:
             response = requests.get(product_url, headers=headers)
             soup = BeautifulSoup(response.content, "html.parser")
 
-            # Replace with actual logic based on Amazon's HTML structure
             price_tag = soup.find("span", {"id": "priceblock_ourprice"})
             if price_tag:
-                price = float(price_tag.get_text().replace("$", "").replace(",", ""))
-                return price
-            else:
-                print("Could not retrieve price.")
-                return None
+                return float(price_tag.get_text().replace("$", "").replace(",", ""))
+            return None
         except Exception as e:
             print(f"Error occurred: {e}")
             return None
@@ -124,7 +92,6 @@ class PriceDropNotifierApp:
             messagebox.showinfo("Notification Sent", "Price drop notification sent via SMS.")
         except Exception as e:
             print(f"Failed to send SMS: {e}")
-
 
 if __name__ == "__main__":
     root = tk.Tk()
