@@ -92,7 +92,7 @@ class PriceDropApp:
                 from_=TWILIO_PHONE_NUMBER,
                 to=mobile_number
             )
-            messagebox.showinfo("Notification Sent", "Price drop SMS sent.")
+            messagebox.showinfo("notification Sent", "price drop SMS sent.")
         except Exception as e:
             print(f"SMS failed: {e}")
 
